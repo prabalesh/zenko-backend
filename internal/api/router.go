@@ -12,6 +12,7 @@ func SetupRouter(
 	cfg *config.Config,
 	authHandler *handlers.AuthHandler,
 	profileHandler *handlers.ProfileHandler,
+	friendsHandler *handlers.FriendsHandler,
 	jwtService auth.JWTService,
 ) *fiber.App {
 	app := fiber.New(fiber.Config{
@@ -56,8 +57,15 @@ func SetupRouter(
 	profileGroup.Patch("/username", profileHandler.ChangeUsername)
 	profileGroup.Patch("/social-links", profileHandler.UpdateSocialLinks)
 
-	// Public profile route
-	v1.Get("/profile/:username", profileHandler.GetPublicProfile)
+	// Friends routes
+	friendsGroup := protected.Group("/friends")
+	friendsGroup.Post("/request", friendsHandler.SendRequest)
+	friendsGroup.Get("/", friendsHandler.GetFriends)
+	friendsGroup.Get("/requests", friendsHandler.GetRequests)
+	friendsGroup.Patch("/:id/accept", friendsHandler.AcceptRequest)
+	friendsGroup.Delete("/:id", friendsHandler.RemoveFriend)
+	friendsGroup.Post("/:id/block", friendsHandler.BlockUser)
+	friendsGroup.Delete("/:id/block", friendsHandler.UnblockUser)
 
 	return app
 }
