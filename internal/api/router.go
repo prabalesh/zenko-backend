@@ -11,6 +11,7 @@ import (
 func SetupRouter(
 	cfg *config.Config,
 	authHandler *handlers.AuthHandler,
+	profileHandler *handlers.ProfileHandler,
 	jwtService auth.JWTService,
 ) *fiber.App {
 	app := fiber.New(fiber.Config{
@@ -46,6 +47,17 @@ func SetupRouter(
 		userID := c.Locals("user_id")
 		return c.JSON(fiber.Map{"status": "authenticated", "user_id": userID})
 	})
+
+	// Profile routes
+	profileGroup := protected.Group("/profile")
+	profileGroup.Post("/username", profileHandler.SetUsername)
+	profileGroup.Get("/", profileHandler.GetProfile)
+	profileGroup.Patch("/", profileHandler.UpdateProfile)
+	profileGroup.Patch("/username", profileHandler.ChangeUsername)
+	profileGroup.Patch("/social-links", profileHandler.UpdateSocialLinks)
+
+	// Public profile route
+	v1.Get("/profile/:username", profileHandler.GetPublicProfile)
 
 	return app
 }

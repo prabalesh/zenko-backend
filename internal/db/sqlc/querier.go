@@ -6,11 +6,22 @@ package sqlc
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
+	CountUsernameChangesPast30Days(ctx context.Context, userID pgtype.UUID) (int64, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteSocialLink(ctx context.Context, arg DeleteSocialLinkParams) error
+	GetLatestUsernameChange(ctx context.Context, userID pgtype.UUID) (pgtype.Timestamptz, error)
+	GetSocialLinksByUserID(ctx context.Context, userID pgtype.UUID) ([]UserSocialLink, error)
 	GetUserByGoogleID(ctx context.Context, googleID string) (User, error)
+	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
+	GetUserByUsername(ctx context.Context, username string) (User, error)
+	InsertUsernameChange(ctx context.Context, arg InsertUsernameChangeParams) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpsertSocialLink(ctx context.Context, arg UpsertSocialLinkParams) (UserSocialLink, error)
 }
 
 var _ Querier = (*Queries)(nil)

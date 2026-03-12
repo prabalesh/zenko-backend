@@ -10,6 +10,7 @@ import (
 	"github.com/prabalesh/zenko-backend/internal/config"
 	sqlc "github.com/prabalesh/zenko-backend/internal/db/sqlc"
 	"github.com/prabalesh/zenko-backend/internal/services/auth"
+	"github.com/prabalesh/zenko-backend/internal/services/profile"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -64,12 +65,14 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to initialize jwt service")
 	}
 	oauthService := auth.NewOAuthService(cfg.GoogleClientID, cfg.GoogleClientSecret, cfg.GoogleRedirectURL, redisClient)
+	profileService := profile.NewProfileService(queries)
 
 	// Initialize Handlers
 	authHandler := handlers.NewAuthHandler(oauthService, jwtService, queries)
+	profileHandler := handlers.NewProfileHandler(profileService)
 
 	// Setup router
-	server := api.SetupRouter(cfg, authHandler, jwtService)
+	server := api.SetupRouter(cfg, authHandler, profileHandler, jwtService)
 
 	// Start server
 	log.Info().Str("port", cfg.ServerPort).Msg("starting server")
