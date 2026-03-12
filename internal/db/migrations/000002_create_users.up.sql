@@ -1,0 +1,27 @@
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  google_id VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(30) UNIQUE NOT NULL,
+  avatar_url TEXT NOT NULL,
+  bio VARCHAR(150),
+  country CHAR(2),
+  dob DATE,
+  elo INTEGER NOT NULL DEFAULT 1200,
+  wins INTEGER NOT NULL DEFAULT 0,
+  losses INTEGER NOT NULL DEFAULT 0,
+  matches_played INTEGER NOT NULL DEFAULT 0,
+  best_streak INTEGER NOT NULL DEFAULT 0,
+  current_streak INTEGER NOT NULL DEFAULT 0,
+  xp INTEGER NOT NULL DEFAULT 0,
+  fav_mode game_mode,
+  is_bot BOOLEAN NOT NULL DEFAULT FALSE,
+  online_status BOOLEAN NOT NULL DEFAULT FALSE,
+  last_seen TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER set_users_updated_at
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
