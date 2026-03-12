@@ -1,3 +1,6 @@
+include .env
+export
+
 .PHONY: run build test migrate-up migrate-down
 
 run:
