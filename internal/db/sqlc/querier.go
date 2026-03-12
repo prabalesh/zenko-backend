@@ -14,20 +14,29 @@ type Querier interface {
 	CountUserFriends(ctx context.Context, senderID pgtype.UUID) (int64, error)
 	CountUsernameChangesPast30Days(ctx context.Context, userID pgtype.UUID) (int64, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteFCMToken(ctx context.Context, fcmToken string) error
 	DeleteFriendship(ctx context.Context, arg DeleteFriendshipParams) error
 	DeleteSocialLink(ctx context.Context, arg DeleteSocialLinkParams) error
 	GetFriendRequestsList(ctx context.Context, senderID pgtype.UUID) ([]GetFriendRequestsListRow, error)
 	GetFriendship(ctx context.Context, arg GetFriendshipParams) (Friend, error)
 	GetLatestUsernameChange(ctx context.Context, userID pgtype.UUID) (pgtype.Timestamptz, error)
+	GetNotificationPreferences(ctx context.Context, userID pgtype.UUID) (NotificationPreference, error)
 	GetSocialLinksByUserID(ctx context.Context, userID pgtype.UUID) ([]UserSocialLink, error)
 	GetUserByGoogleID(ctx context.Context, googleID string) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	GetUserFCMTokens(ctx context.Context, userID pgtype.UUID) ([]string, error)
+	InsertNotification(ctx context.Context, arg InsertNotificationParams) (Notification, error)
 	InsertUsernameChange(ctx context.Context, arg InsertUsernameChangeParams) error
 	ListFriendsPaginated(ctx context.Context, arg ListFriendsPaginatedParams) ([]ListFriendsPaginatedRow, error)
+	ListNotificationsPaginated(ctx context.Context, arg ListNotificationsPaginatedParams) ([]Notification, error)
+	MarkAllNotificationsRead(ctx context.Context, userID pgtype.UUID) error
+	MarkNotificationRead(ctx context.Context, arg MarkNotificationReadParams) error
+	RegisterFCMToken(ctx context.Context, arg RegisterFCMTokenParams) error
 	SendFriendRequest(ctx context.Context, arg SendFriendRequestParams) (Friend, error)
 	UpdateFriendStatus(ctx context.Context, arg UpdateFriendStatusParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpsertNotificationPreferences(ctx context.Context, arg UpsertNotificationPreferencesParams) (NotificationPreference, error)
 	UpsertSocialLink(ctx context.Context, arg UpsertSocialLinkParams) (UserSocialLink, error)
 }
 

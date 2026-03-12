@@ -13,6 +13,7 @@ func SetupRouter(
 	authHandler *handlers.AuthHandler,
 	profileHandler *handlers.ProfileHandler,
 	friendsHandler *handlers.FriendsHandler,
+	notificationHandler *handlers.NotificationHandler,
 	jwtService auth.JWTService,
 ) *fiber.App {
 	app := fiber.New(fiber.Config{
@@ -65,7 +66,14 @@ func SetupRouter(
 	friendsGroup.Patch("/:id/accept", friendsHandler.AcceptRequest)
 	friendsGroup.Delete("/:id", friendsHandler.RemoveFriend)
 	friendsGroup.Post("/:id/block", friendsHandler.BlockUser)
-	friendsGroup.Delete("/:id/block", friendsHandler.UnblockUser)
+	// Notifications routes
+	notifGroup := protected.Group("/notifications")
+	notifGroup.Get("/preferences", notificationHandler.GetPreferences)
+	notifGroup.Patch("/preferences", notificationHandler.UpdatePreferences)
+	notifGroup.Post("/fcm-token", notificationHandler.RegisterFCMToken)
+	notifGroup.Get("/", notificationHandler.GetNotifications)
+	notifGroup.Patch("/:id/read", notificationHandler.MarkAsRead)
+	notifGroup.Patch("/read-all", notificationHandler.MarkAllAsRead)
 
 	return app
 }

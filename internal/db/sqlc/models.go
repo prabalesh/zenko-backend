@@ -289,8 +289,8 @@ type Challenge struct {
 type FcmToken struct {
 	ID         pgtype.UUID        `json:"id"`
 	UserID     pgtype.UUID        `json:"user_id"`
-	Token      string             `json:"token"`
-	DeviceType PlatformType       `json:"device_type"`
+	FcmToken   string             `json:"fcm_token"`
+	Platform   PlatformType       `json:"platform"`
 	LastUsedAt pgtype.Timestamptz `json:"last_used_at"`
 	CreatedAt  pgtype.Timestamptz `json:"created_at"`
 }
@@ -339,11 +339,15 @@ type Notification struct {
 }
 
 type NotificationPreference struct {
-	UserID         pgtype.UUID        `json:"user_id"`
-	FriendRequests bool               `json:"friend_requests"`
-	Challenges     bool               `json:"challenges"`
-	Marketing      bool               `json:"marketing"`
-	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
+	UserID            pgtype.UUID        `json:"user_id"`
+	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
+	FriendRequest     bool               `json:"friend_request"`
+	FriendAccepted    bool               `json:"friend_accepted"`
+	ChallengeReceived bool               `json:"challenge_received"`
+	ChallengeDeclined bool               `json:"challenge_declined"`
+	Reengagement      bool               `json:"reengagement"`
+	WeeklyReset       bool               `json:"weekly_reset"`
+	GlobalMute        bool               `json:"global_mute"`
 }
 
 type User struct {
